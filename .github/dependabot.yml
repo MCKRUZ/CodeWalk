@@ -1,0 +1,60 @@
+# Dependabot - Automated dependency updates
+version: 2
+
+updates:
+  # NPM dependencies
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "America/New_York"
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "deps"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "priority-p2"
+    reviewers:
+      - "MCKRUZ"
+    groups:
+      # Group VS Code related packages
+      vscode:
+        patterns:
+          - "@types/vscode"
+          - "@vscode/*"
+          - "vsce"
+      # Group test packages
+      testing:
+        patterns:
+          - "vitest"
+          - "@vitest/*"
+          - "@vscode/test-*"
+      # Group TypeScript/build tools
+      build:
+        patterns:
+          - "typescript"
+          - "esbuild"
+          - "eslint*"
+          - "@typescript-eslint/*"
+      # Group AI SDKs
+      ai:
+        patterns:
+          - "@anthropic-ai/*"
+          - "@azure/openai"
+          - "openai"
+
+  # GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 3
+    commit-message:
+      prefix: "ci"
+    labels:
+      - "dependencies"
+      - "infrastructure"

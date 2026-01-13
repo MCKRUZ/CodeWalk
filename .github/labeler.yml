@@ -1,0 +1,50 @@
+# Auto-labeler configuration - labels PRs based on files changed
+# Used by .github/workflows/project-automation.yml
+
+frontend:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'src/ui/**/*'
+      - 'media/**/*'
+      - '**/*.css'
+      - '**/*.html'
+
+backend:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'src/core/**/*'
+      - 'src/extension.ts'
+
+ai:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'src/ai/**/*'
+      - '**/prompt*.ts'
+
+debug:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'src/debug/**/*'
+
+infrastructure:
+  - changed-files:
+    - any-glob-to-any-file:
+      - '.github/**/*'
+      - 'package.json'
+      - 'tsconfig.json'
+      - 'esbuild*.js'
+      - '.eslintrc*'
+      - 'vitest.config.*'
+
+documentation:
+  - changed-files:
+    - any-glob-to-any-file:
+      - '**/*.md'
+      - 'docs/**/*'
+
+tests:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'test/**/*'
+      - '**/*.test.ts'
+      - '**/*.spec.ts'

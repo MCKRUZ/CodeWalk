@@ -1,0 +1,149 @@
+# Claude AI Code Review - Automatically reviews PRs with AI
+name: Claude PR Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  claude-review:
+    runs-on: ubuntu-latest
+    # Only run if API key is configured
+    if: ${{ vars.ENABLE_CLAUDE_REVIEW == 'true' }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v44
+        with:
+          files: |
+            src/**/*.ts
+            src/**/*.tsx
+            test/**/*.ts
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+      
+      - name: Install Anthropic SDK
+        run: npm install @anthropic-ai/sdk
+      
+      - name: Run Claude Review
+        if: steps.changed-files.outputs.any_changed == 'true'
+        uses: actions/github-script@v7
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
+        with:
+          script: |
+            const Anthropic = require('@anthropic-ai/sdk').default;
+            const fs = require('fs');
+            
+            const anthropic = new Anthropic({
+              apiKey: process.env.ANTHROPIC_API_KEY,
+            });
+            
+            const changedFiles = process.env.CHANGED_FILES.split(' ').filter(f => f);
+            
+            if (changedFiles.length === 0) {
+              console.log('No TypeScript files changed, skipping review');
+              return;
+            }
+            
+            // Collect file contents
+            let fileContents = '';
+            for (const file of changedFiles.slice(0, 10)) { // Limit to 10 files
+              try {
+                const content = fs.readFileSync(file, 'utf8');
+                fileContents += `\n### File: ${file}\n\`\`\`typescript\n${content}\n\`\`\`\n`;
+              } catch (e) {
+                console.log(`Could not read ${file}: ${e.message}`);
+              }
+            }
+            
+            if (!fileContents) {
+              console.log('No file contents to review');
+              return;
+            }
+            
+            // Get PR info
+            const prNumber = context.payload.pull_request.number;
+            const prTitle = context.payload.pull_request.title;
+            const prBody = context.payload.pull_request.body || 'No description provided';
+            
+            const prompt = `You are a senior TypeScript developer reviewing a VS Code extension PR.
+
+            ## PR Information
+            - Title: ${prTitle}
+            - Description: ${prBody}
+            
+            ## Changed Files
+            ${fileContents}
+            
+            ## Review Instructions
+            Provide a concise code review focusing on:
+            1. **Bugs or Issues**: Any logical errors, edge cases, or potential runtime errors
+            2. **TypeScript Best Practices**: Type safety, proper async/await usage, null checks
+            3. **VS Code Extension Patterns**: Proper disposal, activation events, command registration
+            4. **Security**: API key handling, user input validation
+            5. **Performance**: Memory leaks, unnecessary re-renders, efficient algorithms
+            
+            Format your response as:
+            
+            ## Summary
+            [1-2 sentence overall assessment]
+            
+            ## Issues Found
+            - [List specific issues with file:line references if applicable]
+            
+            ## Suggestions
+            - [List improvement suggestions]
+            
+            ## Approval
+            [APPROVE / REQUEST_CHANGES / COMMENT] - [reason]
+            
+            Keep the review concise and actionable. If the code looks good, say so briefly.`;
+            
+            try {
+              const response = await anthropic.messages.create({
+                model: 'claude-sonnet-4-20250514',
+                max_tokens: 2000,
+                messages: [{ role: 'user', content: prompt }],
+              });
+              
+              const reviewContent = response.content[0].text;
+              
+              // Post review as PR comment
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNumber,
+                body: `## 🤖 Claude Code Review\n\n${reviewContent}\n\n---\n*Automated review by Claude AI*`,
+              });
+              
+              console.log('Review posted successfully');
+            } catch (error) {
+              console.error('Claude API error:', error.message);
+              
+              // Post error as comment
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNumber,
+                body: `## 🤖 Claude Code Review\n\n⚠️ Review could not be completed: ${error.message}\n\n---\n*Automated review by Claude AI*`,
+              });
+            }
+      
+      - name: Skip review notice
+        if: steps.changed-files.outputs.any_changed != 'true'
+        run: echo "No TypeScript files changed, skipping Claude review"
