@@ -25,7 +25,7 @@ export class Logger {
    * Log debug message (only in debug mode)
    */
   static debug(message: string, ...args: unknown[]): void {
-    if (!this.debugMode) return;
+    if (!this.debugMode) {return;}
     this.log('DEBUG', message, args);
   }
 

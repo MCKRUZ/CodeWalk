@@ -16,7 +16,7 @@ export class EditorDecorations {
     // Current step - highlighted background
     this.currentStepDecoration = vscode.window.createTextEditorDecorationType({
       backgroundColor: 'rgba(255, 213, 79, 0.15)',
-      borderLeft: '3px solid #FFC107',
+      border: '3px solid #FFC107',
       isWholeLine: true,
       overviewRulerColor: '#FFC107',
       overviewRulerLane: vscode.OverviewRulerLane.Left,

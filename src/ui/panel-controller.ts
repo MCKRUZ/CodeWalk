@@ -111,6 +111,6 @@ export class PanelController {
    * Post message to webview
    */
   private postMessage(message: ExtensionToWebviewMessage): void {
-    this.panel?.webview.postMessage(message);
+    void this.panel?.webview.postMessage(message);
   }
 }

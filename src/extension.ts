@@ -51,7 +51,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
     Logger.info('CodeWalk extension activated successfully');
   } catch (error) {
     Logger.error('Failed to activate CodeWalk extension', error as Error);
-    vscode.window.showErrorMessage('CodeWalk failed to activate. Check output for details.');
+    void vscode.window.showErrorMessage('CodeWalk failed to activate. Check output for details.');
   }
 }
 
@@ -63,13 +63,20 @@ function registerCommands(
   controller: WalkthroughController,
   secretStorage: SecretStorage
 ): void {
+  // Hello World - verification command
+  context.subscriptions.push(
+    vscode.commands.registerCommand('codewalk.helloWorld', () => {
+      void vscode.window.showInformationMessage('Hello World from CodeWalk!');
+    })
+  );
+
   // Start walkthrough from selection
   context.subscriptions.push(
     vscode.commands.registerCommand('codewalk.startWalkthrough', async () => {
       const editor = vscode.window.activeTextEditor;
       
       if (!editor || editor.selection.isEmpty) {
-        vscode.window.showWarningMessage('Please select code to walk through');
+        void vscode.window.showWarningMessage('Please select code to walk through');
         return;
       }
 
@@ -100,13 +107,13 @@ function registerCommands(
   // Navigate steps
   context.subscriptions.push(
     vscode.commands.registerCommand('codewalk.nextStep', () => {
-      controller.nextStep();
+      void controller.nextStep();
     })
   );
 
   context.subscriptions.push(
     vscode.commands.registerCommand('codewalk.previousStep', () => {
-      controller.previousStep();
+      void controller.previousStep();
     })
   );
 
@@ -134,7 +141,7 @@ function registerCommands(
         } else {
           await secretStorage.setAzureOpenAIKey(key);
         }
-        vscode.window.showInformationMessage(`${provider} API key saved successfully`);
+        void vscode.window.showInformationMessage(`${provider} API key saved successfully`);
       }
     })
   );

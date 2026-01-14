@@ -8,7 +8,7 @@ import * as vscode from 'vscode';
 
 export function getWebviewContent(
   webview: vscode.Webview,
-  extensionUri: vscode.Uri
+  _extensionUri: vscode.Uri
 ): string {
   // Get nonce for content security
   const nonce = getNonce();

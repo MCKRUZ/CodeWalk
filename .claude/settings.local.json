@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(gh issue view:*)",
+      "Bash(npm run build)",
+      "Bash(npm install:*)",
+      "Bash(npm run compile:*)",
+      "Bash(dir:*)",
+      "Bash(npm run lint)",
+      "Bash(npm run lint:fix:*)",
+      "Bash(gh issue list:*)",
+      "Bash(for i in 3 4 5 8 9 10 11 12 13 15 16 17 18 19)",
+      "Bash(do echo:*)",
+      "Bash(done)",
+      "Bash(git checkout:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
+    ]
+  }
+}

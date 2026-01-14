@@ -50,7 +50,7 @@ export function throttle<T extends (...args: unknown[]) => unknown>(
  * Truncate string with ellipsis
  */
 export function truncate(str: string, maxLength: number): string {
-  if (str.length <= maxLength) return str;
+  if (str.length <= maxLength) {return str;}
   return str.substring(0, maxLength - 3) + '...';
 }
 
@@ -70,7 +70,7 @@ export function escapeHtml(unsafe: string): string {
  * Format file size
  */
 export function formatBytes(bytes: number, decimals: number = 2): string {
-  if (bytes === 0) return '0 Bytes';
+  if (bytes === 0) {return '0 Bytes';}
 
   const k = 1024;
   const dm = decimals < 0 ? 0 : decimals;

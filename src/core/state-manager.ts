@@ -61,7 +61,7 @@ export class StateManager extends EventEmitter {
    * Update walkthrough status
    */
   setStatus(status: WalkthroughStatus, error?: string): void {
-    if (!this.state) return;
+    if (!this.state) {return;}
 
     this.state = {
       ...this.state,
@@ -80,7 +80,7 @@ export class StateManager extends EventEmitter {
    * Set the generated steps
    */
   setSteps(steps: WalkthroughStep[]): void {
-    if (!this.state) return;
+    if (!this.state) {return;}
 
     this.state = {
       ...this.state,
@@ -96,10 +96,10 @@ export class StateManager extends EventEmitter {
    * Update a step's explanation
    */
   updateStepExplanation(stepId: string, explanation: string): void {
-    if (!this.state) return;
+    if (!this.state) {return;}
 
     const stepIndex = this.state.steps.findIndex((s) => s.id === stepId);
-    if (stepIndex === -1) return;
+    if (stepIndex === -1) {return;}
 
     const updatedSteps = [...this.state.steps];
     updatedSteps[stepIndex] = {
@@ -119,7 +119,7 @@ export class StateManager extends EventEmitter {
    * Navigate to next step
    */
   nextStep(): WalkthroughStep | null {
-    if (!this.state || this.state.steps.length === 0) return null;
+    if (!this.state || this.state.steps.length === 0) {return null;}
 
     const newIndex = Math.min(
       this.state.currentStepIndex + 1,
@@ -141,7 +141,7 @@ export class StateManager extends EventEmitter {
    * Navigate to previous step
    */
   previousStep(): WalkthroughStep | null {
-    if (!this.state || this.state.steps.length === 0) return null;
+    if (!this.state || this.state.steps.length === 0) {return null;}
 
     const newIndex = Math.max(this.state.currentStepIndex - 1, 0);
 
@@ -160,7 +160,7 @@ export class StateManager extends EventEmitter {
    * Navigate to specific step
    */
   goToStep(index: number): WalkthroughStep | null {
-    if (!this.state || this.state.steps.length === 0) return null;
+    if (!this.state || this.state.steps.length === 0) {return null;}
 
     const clampedIndex = Math.max(0, Math.min(index, this.state.steps.length - 1));
 
@@ -179,7 +179,7 @@ export class StateManager extends EventEmitter {
    * Get current step
    */
   getCurrentStep(): WalkthroughStep | null {
-    if (!this.state || this.state.steps.length === 0) return null;
+    if (!this.state || this.state.steps.length === 0) {return null;}
     return this.state.steps[this.state.currentStepIndex];
   }
 
@@ -187,7 +187,7 @@ export class StateManager extends EventEmitter {
    * Add a conversation turn
    */
   addConversationTurn(role: 'user' | 'assistant', content: string): void {
-    if (!this.state) return;
+    if (!this.state) {return;}
 
     const currentStep = this.getCurrentStep();
     const turn: ConversationTurn = {
@@ -210,7 +210,7 @@ export class StateManager extends EventEmitter {
    * Set walkthrough mode (static/debug)
    */
   setMode(mode: WalkthroughMode): void {
-    if (!this.state) return;
+    if (!this.state) {return;}
 
     this.state = {
       ...this.state,
@@ -224,10 +224,10 @@ export class StateManager extends EventEmitter {
    * Update step variables (debug mode)
    */
   updateStepVariables(stepId: string, variables: WalkthroughStep['variables']): void {
-    if (!this.state) return;
+    if (!this.state) {return;}
 
     const stepIndex = this.state.steps.findIndex((s) => s.id === stepId);
-    if (stepIndex === -1) return;
+    if (stepIndex === -1) {return;}
 
     const updatedSteps = [...this.state.steps];
     updatedSteps[stepIndex] = {

@@ -46,7 +46,7 @@ export class WalkthroughController {
 
     this.stateManager.on('stepChanged', (step: WalkthroughStep) => {
       this.highlightCurrentStep();
-      this.ensureStepExplanation(step);
+      void this.ensureStepExplanation(step);
     });
 
     // Listen for panel messages
@@ -76,7 +76,7 @@ export class WalkthroughController {
       }
 
       // Create new walkthrough state
-      const state = this.stateManager.createWalkthrough(selection);
+      this.stateManager.createWalkthrough(selection);
 
       // Show panel with loading state
       this.panelController.show();
@@ -91,7 +91,7 @@ export class WalkthroughController {
 
       // Generate steps
       this.stateManager.setStatus('analyzing');
-      const steps = await this.stepGenerator.generateSteps(
+      const steps = this.stepGenerator.generateSteps(
         selection.content,
         selection.language,
         selection.range.startLine
@@ -136,7 +136,7 @@ export class WalkthroughController {
     this.stateManager.reset();
     this.panelController.hide();
 
-    vscode.commands.executeCommand('setContext', 'codewalk.walkthroughActive', false);
+    void vscode.commands.executeCommand('setContext', 'codewalk.walkthroughActive', false);
   }
 
   /**
@@ -174,7 +174,7 @@ export class WalkthroughController {
    */
   async askQuestion(question: string): Promise<void> {
     const state = this.stateManager.getState();
-    if (!state || !this.aiClient) return;
+    if (!state || !this.aiClient) {return;}
 
     Logger.debug(`User question: ${question}`);
 
@@ -185,7 +185,7 @@ export class WalkthroughController {
       this.panelController.postLoading(true, 'Thinking...');
 
       const currentStep = this.stateManager.getCurrentStep();
-      if (!currentStep) return;
+      if (!currentStep) {return;}
 
       // Build context for Q&A
       const context = this.contextBuilder.buildExplanationContext(
@@ -224,7 +224,9 @@ export class WalkthroughController {
    * Dispose of resources
    */
   dispose(): void {
-    this.disposables.forEach((d) => d.dispose());
+    for (const d of this.disposables) {
+      d.dispose();
+    }
     this.editorDecorations.clearAll();
   }
 
@@ -232,7 +234,7 @@ export class WalkthroughController {
    * Generate explanation for a step if not already present
    */
   private async ensureStepExplanation(step: WalkthroughStep): Promise<void> {
-    if (step.explanation || !this.aiClient) return;
+    if (step.explanation || !this.aiClient) {return;}
     await this.generateStepExplanation(step);
   }
 
@@ -241,7 +243,7 @@ export class WalkthroughController {
    */
   private async generateStepExplanation(step: WalkthroughStep): Promise<void> {
     const state = this.stateManager.getState();
-    if (!state || !this.aiClient) return;
+    if (!state || !this.aiClient) {return;}
 
     try {
       this.panelController.postLoading(true, 'Generating explanation...');
@@ -270,10 +272,10 @@ export class WalkthroughController {
    */
   private highlightCurrentStep(): void {
     const state = this.stateManager.getState();
-    if (!state) return;
+    if (!state) {return;}
 
     const currentStep = state.steps[state.currentStepIndex];
-    if (!currentStep) return;
+    if (!currentStep) {return;}
 
     // Find the editor for this file
     const editor = vscode.window.visibleTextEditors.find(
@@ -302,16 +304,16 @@ export class WalkthroughController {
 
     switch (msg.type) {
       case 'goToStep':
-        this.goToStep(msg.index as number);
+        void this.goToStep(msg.index as number);
         break;
       case 'nextStep':
-        this.nextStep();
+        void this.nextStep();
         break;
       case 'previousStep':
-        this.previousStep();
+        void this.previousStep();
         break;
       case 'askQuestion':
-        this.askQuestion(msg.question as string);
+        void this.askQuestion(msg.question as string);
         break;
       case 'stopWalkthrough':
         this.stopWalkthrough();
@@ -327,7 +329,7 @@ export class WalkthroughController {
    */
   private goToCodeLocation(startLine: number, endLine: number): void {
     const state = this.stateManager.getState();
-    if (!state) return;
+    if (!state) {return;}
 
     const editor = vscode.window.visibleTextEditors.find(
       (e) => e.document.uri.fsPath === state.sourceFile

@@ -29,6 +29,11 @@
   "contributes": {
     "commands": [
       {
+        "command": "codewalk.helloWorld",
+        "title": "Hello World",
+        "category": "CodeWalk"
+      },
+      {
         "command": "codewalk.startWalkthrough",
         "title": "Walk Through Selected Code",
         "category": "CodeWalk"

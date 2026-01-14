@@ -117,7 +117,7 @@ export class ContextBuilder {
     history: ConversationTurn[],
     maxTokens: number
   ): ConversationTurn[] {
-    if (history.length === 0) return [];
+    if (history.length === 0) {return [];}
 
     const result: ConversationTurn[] = [];
     let tokens = 0;

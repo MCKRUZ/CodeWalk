@@ -12,15 +12,14 @@ export class StepGenerator {
   /**
    * Generate steps from code
    */
-  async generateSteps(
+  generateSteps(
     code: string,
     language: string,
     startLineOffset: number = 1
-  ): Promise<GeneratedStep[]> {
+  ): GeneratedStep[] {
     Logger.debug(`Generating steps for ${language} code (${code.length} chars)`);
 
     const lines = code.split('\n');
-    const steps: GeneratedStep[] = [];
 
     // Use language-specific parsing
     switch (language) {
@@ -195,7 +194,7 @@ export class StepGenerator {
    * Check if line starts a new JS/TS step
    */
   private isJSStepStart(line: string, depth: number): boolean {
-    if (depth > 1) return false;
+    if (depth > 1) {return false;}
 
     return (
       line.startsWith('const ') ||
@@ -226,7 +225,7 @@ export class StepGenerator {
     depth: number,
     step: Partial<GeneratedStep> | null
   ): boolean {
-    if (!step) return false;
+    if (!step) {return false;}
 
     return (
       line.endsWith(';') ||
@@ -239,7 +238,7 @@ export class StepGenerator {
    * Check if line starts a new C# step
    */
   private isCSharpStepStart(line: string, depth: number): boolean {
-    if (depth > 1) return false;
+    if (depth > 1) {return false;}
 
     return (
       line.startsWith('var ') ||
@@ -270,7 +269,7 @@ export class StepGenerator {
     depth: number,
     step: Partial<GeneratedStep> | null
   ): boolean {
-    if (!step) return false;
+    if (!step) {return false;}
 
     return (
       line.endsWith(';') ||
@@ -284,27 +283,27 @@ export class StepGenerator {
   private extractJSTitle(line: string): string {
     // Variable declaration
     const varMatch = line.match(/^(?:const|let|var)\s+(\w+)/);
-    if (varMatch) return `Initialize ${varMatch[1]}`;
+    if (varMatch) {return `Initialize ${varMatch[1]}`;}
 
     // Function declaration
     const funcMatch = line.match(/^(?:async\s+)?function\s+(\w+)/);
-    if (funcMatch) return `Define ${funcMatch[1]}`;
+    if (funcMatch) {return `Define ${funcMatch[1]}`;}
 
     // Arrow function assignment
     const arrowMatch = line.match(/^(?:const|let)\s+(\w+)\s*=/);
-    if (arrowMatch && line.includes('=>')) return `Define ${arrowMatch[1]}`;
+    if (arrowMatch && line.includes('=>')) {return `Define ${arrowMatch[1]}`;}
 
     // Control flow
-    if (line.startsWith('if')) return 'Conditional check';
-    if (line.startsWith('for')) return 'Loop iteration';
-    if (line.startsWith('while')) return 'While loop';
-    if (line.startsWith('switch')) return 'Switch statement';
-    if (line.startsWith('try')) return 'Try block';
-    if (line.startsWith('return')) return 'Return statement';
+    if (line.startsWith('if')) {return 'Conditional check';}
+    if (line.startsWith('for')) {return 'Loop iteration';}
+    if (line.startsWith('while')) {return 'While loop';}
+    if (line.startsWith('switch')) {return 'Switch statement';}
+    if (line.startsWith('try')) {return 'Try block';}
+    if (line.startsWith('return')) {return 'Return statement';}
 
     // Method call
     const callMatch = line.match(/^(?:await\s+)?(\w+(?:\.\w+)*)\s*\(/);
-    if (callMatch) return `Call ${callMatch[1]}`;
+    if (callMatch) {return `Call ${callMatch[1]}`;}
 
     return 'Code block';
   }
@@ -315,20 +314,20 @@ export class StepGenerator {
   private extractCSharpTitle(line: string): string {
     // Variable declaration
     const varMatch = line.match(/^(?:var|int|string|bool|\w+)\s+(\w+)\s*=/);
-    if (varMatch) return `Initialize ${varMatch[1]}`;
+    if (varMatch) {return `Initialize ${varMatch[1]}`;}
 
     // Control flow
-    if (line.startsWith('if')) return 'Conditional check';
-    if (line.startsWith('for') || line.startsWith('foreach')) return 'Loop iteration';
-    if (line.startsWith('while')) return 'While loop';
-    if (line.startsWith('switch')) return 'Switch statement';
-    if (line.startsWith('try')) return 'Try block';
-    if (line.startsWith('return')) return 'Return statement';
-    if (line.startsWith('using')) return 'Using statement';
+    if (line.startsWith('if')) {return 'Conditional check';}
+    if (line.startsWith('for') || line.startsWith('foreach')) {return 'Loop iteration';}
+    if (line.startsWith('while')) {return 'While loop';}
+    if (line.startsWith('switch')) {return 'Switch statement';}
+    if (line.startsWith('try')) {return 'Try block';}
+    if (line.startsWith('return')) {return 'Return statement';}
+    if (line.startsWith('using')) {return 'Using statement';}
 
     // Method call
     const callMatch = line.match(/^(?:await\s+)?(\w+(?:\.\w+)*)\s*\(/);
-    if (callMatch) return `Call ${callMatch[1]}`;
+    if (callMatch) {return `Call ${callMatch[1]}`;}
 
     return 'Code block';
   }
@@ -380,7 +379,7 @@ export class StepGenerator {
    */
   private consolidateSteps(steps: GeneratedStep[]): GeneratedStep[] {
     // If too few steps, return as-is
-    if (steps.length <= 3) return steps;
+    if (steps.length <= 3) {return steps;}
 
     // If too many steps, consolidate small ones
     if (steps.length > 15) {
