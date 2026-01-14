@@ -1,0 +1,133 @@
+{
+  "name": "codewalk",
+  "displayName": "CodeWalk",
+  "description": "AI-powered interactive code walkthroughs with debug integration",
+  "version": "0.0.1",
+  "publisher": "MCKRUZ",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MCKRUZ/CodeWalk"
+  },
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Education",
+    "Debuggers",
+    "Other"
+  ],
+  "keywords": [
+    "code walkthrough",
+    "AI",
+    "debugging",
+    "learning",
+    "explanation"
+  ],
+  "activationEvents": [],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "codewalk.startWalkthrough",
+        "title": "Walk Through Selected Code",
+        "category": "CodeWalk"
+      },
+      {
+        "command": "codewalk.stopWalkthrough",
+        "title": "Stop Walkthrough",
+        "category": "CodeWalk"
+      },
+      {
+        "command": "codewalk.nextStep",
+        "title": "Next Step",
+        "category": "CodeWalk"
+      },
+      {
+        "command": "codewalk.previousStep",
+        "title": "Previous Step",
+        "category": "CodeWalk"
+      },
+      {
+        "command": "codewalk.setApiKey",
+        "title": "Set API Key",
+        "category": "CodeWalk"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "codewalk.startWalkthrough",
+          "when": "editorHasSelection",
+          "group": "navigation"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "codewalk.startWalkthrough",
+        "key": "ctrl+shift+w",
+        "mac": "cmd+shift+w",
+        "when": "editorHasSelection"
+      },
+      {
+        "command": "codewalk.nextStep",
+        "key": "alt+right",
+        "when": "codewalk.walkthroughActive"
+      },
+      {
+        "command": "codewalk.previousStep",
+        "key": "alt+left",
+        "when": "codewalk.walkthroughActive"
+      }
+    ],
+    "configuration": {
+      "title": "CodeWalk",
+      "properties": {
+        "codewalk.aiProvider": {
+          "type": "string",
+          "default": "anthropic",
+          "enum": ["anthropic", "azure-openai"],
+          "description": "AI provider to use for code explanations"
+        },
+        "codewalk.maxTokens": {
+          "type": "number",
+          "default": 8000,
+          "description": "Maximum tokens for AI context"
+        },
+        "codewalk.autoDebugMode": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically enable debug mode when debugging"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run build",
+    "build": "node esbuild.config.js",
+    "watch": "node esbuild.config.js --watch",
+    "compile": "tsc -noEmit",
+    "lint": "eslint src --ext ts",
+    "lint:fix": "eslint src --ext ts --fix",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "test:integration": "node ./out/test/runTest.js",
+    "package": "vsce package"
+  },
+  "devDependencies": {
+    "@anthropic-ai/sdk": "^0.32.0",
+    "@types/node": "^20.11.0",
+    "@types/vscode": "^1.85.0",
+    "@typescript-eslint/eslint-plugin": "^6.19.0",
+    "@typescript-eslint/parser": "^6.19.0",
+    "@vitest/coverage-v8": "^1.2.0",
+    "@vscode/test-electron": "^2.3.8",
+    "@vscode/vsce": "^2.22.0",
+    "esbuild": "^0.19.11",
+    "eslint": "^8.56.0",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.0"
+  }
+}
