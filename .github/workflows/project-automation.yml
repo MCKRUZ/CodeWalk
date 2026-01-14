@@ -22,7 +22,7 @@ jobs:
       - name: Add issue to project
         uses: actions/add-to-project@v0.5.0
         with:
-          project-url: https://github.com/users/MCKRUZ/projects/1
+          project-url: https://github.com/users/MCKRUZ/projects/2
           github-token: ${{ secrets.PROJECT_TOKEN }}
 
   # Auto-link PRs to issues based on branch name
