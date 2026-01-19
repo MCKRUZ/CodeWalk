@@ -118,7 +118,7 @@
   },
   "devDependencies": {
     "@anthropic-ai/sdk": "^0.32.0",
-    "@types/node": "^20.11.0",
+    "@types/node": "^25.0.9",
     "@types/vscode": "^1.85.0",
     "@typescript-eslint/eslint-plugin": "^6.19.0",
     "@typescript-eslint/parser": "^6.19.0",
