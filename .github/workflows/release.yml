@@ -80,7 +80,7 @@ jobs:
           echo "Generated changelog with $(echo "$CHANGES" | wc -l) entries"
       
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.version.outputs.tag }}
           name: CodeWalk ${{ steps.version.outputs.tag }}
