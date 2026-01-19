@@ -122,12 +122,12 @@
     "@types/vscode": "^1.85.0",
     "@typescript-eslint/eslint-plugin": "^6.19.0",
     "@typescript-eslint/parser": "^6.19.0",
-    "@vitest/coverage-v8": "^1.2.0",
+    "@vitest/coverage-v8": "^4.0.17",
     "@vscode/test-electron": "^2.3.8",
     "@vscode/vsce": "^2.22.0",
     "esbuild": "^0.19.11",
     "eslint": "^8.56.0",
     "typescript": "^5.3.3",
-    "vitest": "^1.2.0"
+    "vitest": "^4.0.17"
   }
 }
